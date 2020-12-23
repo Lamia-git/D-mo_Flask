@@ -9,7 +9,7 @@ def create_app():
     @app.route('/')
     def index():
         conn = get_db_connection()
-        movies = conn.execute('select * from movies order by movieId DESC limit 10 ').fetchall()
+        movies = conn.execute('select * from movies order by movieId DESC limit 12 ').fetchall()
         conn.close()
 
         return render_template('index.html',movies=movies)
@@ -44,5 +44,15 @@ def create_app():
 
         return render_template('index.html')
     
+    
+
+    @app.route('/<int:id>/delete',methods=('GET', 'POST'))
+    def delete(id):
+        #title = get_post(id)
+        conn = get_db_connection()
+        conn.execute('DELETE FROM movies WHERE movieId = ?', (id,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
     
     return app
